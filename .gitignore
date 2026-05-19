@@ -1,0 +1,29 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Virtual environments
+venv/
+.env/
+
+# VSCode
+.vscode/
+
+# Sistema Windows
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Build/distribuição
+build/
+dist/
+*.egg-info/
+
+# Arquivos temporários
+*.tmp
+*.temp
