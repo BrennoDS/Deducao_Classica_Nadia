@@ -377,7 +377,7 @@ class Lexer():
         self.lexer.add('MODUS_TOLLENS', r'mt')
 
         #Disjunctive syllogism
-        self.lexer.add('DISJUNCTIVE_SYLLOGISM', r'ds')
+        self.lexer.add('DISJUNCTION_RULE', r'dr')
 
         self.lexer.add('DOUBLE_NEG_INTROD', r'dni')
         self.lexer.add('DOUBLE_NEG_ELIM', r'dne')
@@ -930,9 +930,11 @@ class ModusTollensDef():
             deduction_result.add_error(
                 parser.get_error(constants.INVALID_RESULT, self.reference1, self)
             )
+    def toLatex(self, symbol_table):
+        return '{' + self.formula.toLatex() + '}'
 
     
-class DisjunctiveSyllogismDef():
+class DisjunctionRuleDef():
     def __init__(self, line, formula, reference1, reference2):
         self.line = line
         self.formula = formula
@@ -993,6 +995,8 @@ class DisjunctiveSyllogismDef():
             deduction_result.add_error(
                 parser.get_error(constants.INVALID_RESULT, self.reference1, self)
             )
+    def toLatex(self, symbol_table):
+        return '{' + self.formula.toLatex() + '}'
 
     
 class DoubleNegationIntroductionDef():
@@ -1025,6 +1029,8 @@ class DoubleNegationIntroductionDef():
             deduction_result.add_error(
                 parser.get_error(constants.INVALID_RESULT, self.reference1, self)
             )
+    def toLatex(self, symbol_table):
+        return '{' + self.formula.toLatex() + '}'
 
 
 
@@ -1065,6 +1071,8 @@ class DoubleNegationEliminationDef():
             deduction_result.add_error(
                 parser.get_error(constants.INVALID_RESULT, self.reference1, self)
             )
+    def toLatex(self, symbol_table):
+        return '{' + self.formula.toLatex() + '}'
 
     
 
@@ -1660,7 +1668,7 @@ class ParserNadia():
             ['NUM', 'DOT', 'COMMA', 'OPEN_PAREN', 'CLOSE_PAREN', 'NOT', 'RAA',
              'AND', 'OR', 'OR_INTROD', 'OR_ELIM', 'BOTTOM','BOTTOM_ELIM', 'OPEN_BRACKET', 'AND_INTROD',
              'AND_ELIM', 'NEG_INTROD', 'NEG_ELIM', 'HYPOTHESIS', 'PREMISE', 'ATOM', 'CLOSE_BRACKET',
-             'DASH', 'COPY', 'IMP_ELIM', 'MODUS_TOLLENS', 'DISJUNCTIVE_SYLLOGISM', 'DOUBLE_NEG_INTROD', 'DOUBLE_NEG_ELIM', 'IMPLIE', 'IMP_INTROD',
+             'DASH', 'COPY', 'IMP_ELIM', 'MODUS_TOLLENS', 'DISJUNCTION_RULE', 'DOUBLE_NEG_INTROD', 'DOUBLE_NEG_ELIM', 'IMPLIE', 'IMP_INTROD',
              'VAR', 'EXT', 'ALL', 'ALL_ELIM', 'EXT_INTROD', 'EXT_ELIM', 'ALL_INTROD' ],
             #The precedence $\lnot,\forall,\exists,\land,\lor,\rightarrow,\leftrightarrow$
             precedence=[
@@ -1880,7 +1888,7 @@ class ParserNadia():
 
                 elif isinstance(rule, ModusTollensDef):
                     rule.evaluation(self, deduction_result)
-                elif isinstance(rule, DisjunctiveSyllogismDef):
+                elif isinstance(rule, DisjunctionRuleDef):
                     rule.evaluation(self, deduction_result)
                 elif isinstance(rule, DoubleNegationIntroductionDef):
                     rule.evaluation(self, deduction_result)
@@ -2034,13 +2042,13 @@ class ParserNadia():
 
             return p[0], formula_result[0]
         
-        @self.pg.production('step : NUM DOT formula DISJUNCTIVE_SYLLOGISM NUM COMMA NUM')
-        def Disjunctive_syllogism(p):
+        @self.pg.production('step : NUM DOT formula DISJUNCTION_RULE NUM COMMA NUM')
+        def Disjunction_rule(p):
             formula_result = p[2]
             formula = formula_result[1]
 
-            disjunctiveSyllogism = DisjunctiveSyllogismDef(p[0].value, formula, p[4], p[6])
-            self.symbol_table.insert(disjunctiveSyllogism, p[0])
+            disjunctionRule = DisjunctionRuleDef(p[0].value, formula, p[4], p[6])
+            self.symbol_table.insert(disjunctionRule, p[0])
 
             self.box_latex += "{} & $ds$ {}, {}\\\\\n".format(
                 formula.toLatex(),
